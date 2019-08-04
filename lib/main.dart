@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:package_info/package_info.dart';
 
 void main() => runApp(MyApp());
 
@@ -54,6 +55,15 @@ class _MyHomePageState extends State<MyHomePage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       _counter++;
+    });
+
+    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+      String _appBuildNumber = packageInfo.buildNumber;
+      String _appVersion = packageInfo.version;
+      setState(() {
+        print("_appVersion: $_appVersion");
+        print("_appBuildNumber: $_appBuildNumber");
+      });
     });
   }
 
