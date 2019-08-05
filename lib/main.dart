@@ -46,11 +46,16 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  ValueNotifierData valueNotifierData = ValueNotifierData('Hello World');
 
   void _incrementCounter() {
     _counter++;
 
+    /// 通过key获取state调用方法更新
     _globalKey.currentState.updateValue(_counter);
+
+    /// 通过
+    valueNotifierData.value = _counter.toString();
 
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -60,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
     });
 
-  /*  PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+    /*  PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
       String _appBuildNumber = packageInfo.buildNumber;
       String _appVersion = packageInfo.version;
       setState(() {
@@ -116,6 +121,9 @@ class _MyHomePageState extends State<MyHomePage> {
             ChildWidget(
               key: _globalKey,
             ),
+            InnerWidget(
+              data: valueNotifierData,
+            )
           ],
         ),
       ),
@@ -128,6 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
+///使用GlobalKey更新子Widget
 class ChildWidget extends StatefulWidget {
   ChildWidget({key}) : super(key: key);
 
@@ -139,7 +148,6 @@ class ChildWidget extends StatefulWidget {
 }
 
 class ChildStateWidget extends State<ChildWidget> {
-
   int _updateTimes = 0;
 
   updateValue(int times) {
@@ -168,6 +176,59 @@ class ChildStateWidget extends State<ChildWidget> {
           Text("第$_updateTimes次更新"),
           Text("当前时间: ${DateTime.now()}")
         ],
+      ),
+    );
+  }
+}
+
+/// 使用ValueNotifier更新子Widget
+class ValueNotifierData extends ValueNotifier<String> {
+  ValueNotifierData(value) : super(value);
+}
+
+class InnerWidget extends StatefulWidget {
+  InnerWidget({this.data});
+
+  final ValueNotifierData data;
+
+  @override
+  InnerWidgetState createState() => InnerWidgetState();
+}
+
+class InnerWidgetState extends State<InnerWidget> {
+  String info;
+
+  @override
+  initState() {
+    super.initState();
+    widget.data.addListener(_handleValueChanged);
+    info = 'Initial mesage: ' + widget.data.value;
+  }
+
+  @override
+  void dispose() {
+    widget.data.removeListener(_handleValueChanged);
+    super.dispose();
+  }
+
+  void _handleValueChanged() {
+    print("_handleValueChanged");
+    setState(() {
+      info = 'Message changed to: ' + widget.data.value;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print("InnerWidget build");
+    return Container(
+      color: Colors.yellow,
+      margin: EdgeInsets.all(10),
+      height: 50,
+      width: 300,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[Text(info), Text("当前时间: ${DateTime.now()}")],
       ),
     );
   }
