@@ -48,24 +48,29 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
   void _incrementCounter() {
+    _counter++;
+
+    _globalKey.currentState.updateValue(_counter);
+
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
-      _counter++;
     });
 
-    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+  /*  PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
       String _appBuildNumber = packageInfo.buildNumber;
       String _appVersion = packageInfo.version;
       setState(() {
         print("_appVersion: $_appVersion");
         print("_appBuildNumber: $_appBuildNumber");
       });
-    });
+    });*/
   }
+
+  GlobalKey<ChildStateWidget> _globalKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -108,6 +113,9 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.display1,
             ),
+            ChildWidget(
+              key: _globalKey,
+            ),
           ],
         ),
       ),
@@ -116,6 +124,51 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+class ChildWidget extends StatefulWidget {
+  ChildWidget({key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return ChildStateWidget();
+  }
+}
+
+class ChildStateWidget extends State<ChildWidget> {
+
+  int _updateTimes = 0;
+
+  updateValue(int times) {
+    setState(() {
+      _updateTimes = times;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print("ChildWidget initState");
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print("ChildWidget build");
+    return Container(
+      color: Colors.green,
+      margin: EdgeInsets.all(10),
+      height: 50,
+      width: 300,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Text("第$_updateTimes次更新"),
+          Text("当前时间: ${DateTime.now()}")
+        ],
+      ),
     );
   }
 }
