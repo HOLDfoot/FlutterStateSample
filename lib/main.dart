@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_demo/provider_page.dart';
 //import 'package:package_info/package_info.dart';
 
 void main() => runApp(MyApp());
@@ -124,6 +125,20 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             InnerWidget(
               data: valueNotifierData,
+            ),
+            Container(
+              margin: EdgeInsets.all(10),
+              height: 50,
+              width: 300,
+              child: FlatButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProviderPage()));
+                  },
+                  child: Text("从下个界面更新数据"),
+                color: Colors.cyanAccent,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(30))),
+              )
             )
           ],
         ),
