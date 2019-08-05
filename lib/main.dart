@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:package_info/package_info.dart';
+//import 'package:package_info/package_info.dart';
 
 void main() => runApp(MyApp());
 
@@ -46,7 +46,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  ValueNotifierData valueNotifierData = ValueNotifierData('Hello World');
+  ValueNotifierData valueNotifierData = ValueNotifierData("0");
 
   void _incrementCounter() {
     _counter++;
@@ -54,9 +54,10 @@ class _MyHomePageState extends State<MyHomePage> {
     /// 通过key获取state调用方法更新
     _globalKey.currentState.updateValue(_counter);
 
-    /// 通过
+    /// 通过ValueNotifierData更新
     valueNotifierData.value = _counter.toString();
 
+    /// 调用setState更新根Widget
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
@@ -202,7 +203,7 @@ class InnerWidgetState extends State<InnerWidget> {
   initState() {
     super.initState();
     widget.data.addListener(_handleValueChanged);
-    info = 'Initial mesage: ' + widget.data.value;
+    info = 'Initial value: ' + widget.data.value;
   }
 
   @override
@@ -214,7 +215,7 @@ class InnerWidgetState extends State<InnerWidget> {
   void _handleValueChanged() {
     print("_handleValueChanged");
     setState(() {
-      info = 'Message changed to: ' + widget.data.value;
+      info = 'Value changed to: ' + widget.data.value;
     });
   }
 
