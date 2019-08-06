@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_demo/main.dart';
+import 'package:provider/provider.dart';
 
 class ProviderPage extends StatefulWidget {
   ProviderPage({Key key, this.title}) : super(key: key);
@@ -19,7 +21,6 @@ class ProviderPage extends StatefulWidget {
 }
 
 class _ProviderPageState extends State<ProviderPage> {
-
   int provideValue = 0;
 
   @override
@@ -58,7 +59,19 @@ class _ProviderPageState extends State<ProviderPage> {
           children: <Widget>[
             Text(
               "provideValue: $provideValue",
+              style: Theme.of(context).textTheme.display1,
             ),
+            Provider<IncreaseWrapper>.value(
+              value: Provider.of<IncreaseWrapper>(context),
+              child: Consumer<IncreaseWrapper>(
+                builder: (context, value, child) => Text("Provider & Consumer value: ${value.value}"),
+              ),
+            ),
+            Text("Provider directly: ${Provider.of<IncreaseWrapper>(context).value}"),
+            Provider<IncreaseWrapper>.value(
+              child:
+                  Text("Provider child: ${Provider.of<IncreaseWrapper>(context).value}"),
+            )
           ],
         ),
       ),
@@ -66,7 +79,7 @@ class _ProviderPageState extends State<ProviderPage> {
         onPressed: () {
           setState(() {
             provideValue++;
-
+            Provider.of<IncreaseWrapper>(context).value = provideValue;
           });
         },
         tooltip: 'Increment',

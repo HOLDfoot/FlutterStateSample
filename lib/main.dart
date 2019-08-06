@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo/provider_page.dart';
+import 'package:provider/provider.dart';
 //import 'package:package_info/package_info.dart';
 
 void main() => runApp(MyApp());
@@ -8,21 +9,24 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+    return Provider<IncreaseWrapper>.value(
+      value: new IncreaseWrapper(111),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          // This is the theme of your application.
+          //
+          // Try running your application with "flutter run". You'll see the
+          // application has a blue toolbar. Then, without quitting the app, try
+          // changing the primarySwatch below to Colors.green and then invoke
+          // "hot reload" (press "r" in the console where you ran "flutter run",
+          // or simply save your changes to "hot reload" in a Flutter IDE).
+          // Notice that the counter didn't reset back to zero; the application
+          // is not restarted.
+          primarySwatch: Colors.blue,
+        ),
+        home: MyHomePage(title: 'Flutter Demo Home Page'),
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
@@ -127,19 +131,19 @@ class _MyHomePageState extends State<MyHomePage> {
               data: valueNotifierData,
             ),
             Container(
-              margin: EdgeInsets.all(10),
-              height: 50,
-              width: 300,
-              child: FlatButton(
+                margin: EdgeInsets.all(10),
+                height: 50,
+                width: 300,
+                child: FlatButton(
                   onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProviderPage()));
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => ProviderPage()));
                   },
-                  child: Text("从下个界面更新数据"),
-                color: Colors.cyanAccent,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30))),
-              )
-            )
+                  child: Text("从下个界面更新数据: ${Provider.of<IncreaseWrapper>(context).value}"),
+                  color: Colors.cyanAccent,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30))),
+                )),
           ],
         ),
       ),
@@ -248,4 +252,11 @@ class InnerWidgetState extends State<InnerWidget> {
       ),
     );
   }
+}
+
+/// 通过Provider完成数据间共享, 需要定义数据的包裹类型
+class IncreaseWrapper {
+  int value = 6;
+
+  IncreaseWrapper(this.value);
 }
