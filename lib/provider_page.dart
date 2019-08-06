@@ -64,14 +64,33 @@ class _ProviderPageState extends State<ProviderPage> {
             Provider<IncreaseWrapper>.value(
               value: Provider.of<IncreaseWrapper>(context),
               child: Consumer<IncreaseWrapper>(
-                builder: (context, value, child) => Text("Provider & Consumer value: ${value.value}"),
+                builder: (context, value, child) {
+                  print("触发Provider's Consumer的build");
+                  return Text("Provider & Consumer value: ${value.value}");
+                },
               ),
             ),
-            Text("Provider directly: ${Provider.of<IncreaseWrapper>(context).value}"),
+            Text(
+                "Provider directly: ${Provider.of<IncreaseWrapper>(context).value}"),
             Provider<IncreaseWrapper>.value(
-              child:
-                  Text("Provider child: ${Provider.of<IncreaseWrapper>(context).value}"),
-            )
+              child: Text(
+                  "Provider child: ${Provider.of<IncreaseWrapper>(context).value}"),
+            ),
+            Container(
+                margin: EdgeInsets.all(10),
+                height: 50,
+                width: 300,
+                child: FlatButton(
+                  onPressed:
+                      Provider.of<Counter>(context, listen: false).increment,
+                  child: Consumer<Counter>(builder:
+                      (BuildContext context, Counter counter, Widget child) {
+                    return Text('更新本按钮的点击次数 ${counter.count} times');
+                  }),
+                  color: Colors.yellow,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30))),
+                )),
           ],
         ),
       ),

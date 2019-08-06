@@ -11,7 +11,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<IncreaseWrapper>.value(value: IncreaseWrapper(100))
+        Provider<IncreaseWrapper>.value(value: IncreaseWrapper(100)),
+
+        /// ChangeNotifierProvider
+        /// 解决了数据改变后无法监听的问题
+        ChangeNotifierProvider<Counter>.value(value: Counter()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -141,8 +145,25 @@ class _MyHomePageState extends State<MyHomePage> {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => ProviderPage()));
                   },
-                  child: Text("从下个界面更新数据: ${Provider.of<IncreaseWrapper>(context).value}"),
+                  child: Text(
+                      "从下个界面更新数据: ${Provider.of<IncreaseWrapper>(context).value}"),
                   color: Colors.cyanAccent,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30))),
+                )),
+            Container(
+                margin: EdgeInsets.all(10),
+                height: 50,
+                width: 300,
+                child: FlatButton(
+                  onPressed:
+                      Provider.of<Counter>(context, listen: false).increment,
+                  child: Consumer<Counter>(builder:
+                      (BuildContext context, Counter counter, Widget child) {
+                    print("触发ChangeNotifierProvider's Consumer的build");
+                    return Text('更新本按钮的点击次数 ${counter.count} times');
+                  }),
+                  color: Colors.yellow,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(30))),
                 )),
@@ -261,4 +282,20 @@ class IncreaseWrapper {
   int value = 6;
 
   IncreaseWrapper(this.value);
+}
+
+class Counter with ChangeNotifier {
+  int _count = 0;
+
+  int get count => _count;
+
+  void increment() {
+    _count++;
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 }
