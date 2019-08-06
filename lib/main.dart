@@ -9,8 +9,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return Provider<IncreaseWrapper>.value(
-      value: new IncreaseWrapper(111),
+    return MultiProvider(
+      providers: [
+        Provider<IncreaseWrapper>.value(value: IncreaseWrapper(100))
+      ],
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
